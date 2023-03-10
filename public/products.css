@@ -1,0 +1,24 @@
+*{
+    margin:0;
+    padding:0;
+}
+.container{
+    width: 80vw;
+    
+    /* background-color: green; */
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3,1fr);
+    margin: 0 auto;
+}
+.top {
+    display: flex;
+    height: 2rem;
+    justify-content: space-around;
+    background-color: black;
+    align-items: center;
+    color:white;
+}
+.top button {
+    padding: 0.5rem 0.8rem;
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Details</title>
+    <link rel="stylesheet" href="products.css">
+</head>
+<body>
+    <div class="container">
+        <% products.forEach(function(value){ %>
+            <div id="mainContainer<%= value.id %>">
+                <img src="<%= value.image %>" alt="">
+                <p><%= value.name %></p>
+                <div>
+                    <label id="label<%= value.id %>"><%= value.quantity %></label>
+                    <button onclick='incCount("<%= value.id %>")'>+</button>
+                    <button onclick='decCount("<%= value.id %>")'>-</button>
+                </div>
+                <div>
+                    <div class="description<%= value.id%>" style="display: none;">
+                        <p><%= value.description %></p>
+                    </div>
+                    <button onclick="deleteFromCart('<%= value.id %>' )">Remove</button>
+                    <button onclick='description("<%= value.id %>")' id="description<%= value.id %>">Desc</button>
+                </div>
+
+            </div>
+           <% }) %>        
+            </div>
+
+            <script>
+                function  makeCall(link,val,operation){
+                    let request=new XMLHttpRequest()
+                    request.open('POST',link);
+                    request.setRequestHeader('Content-Type','application/json');
+                    request.send(JSON.stringify({id:val}));
+                    request.addEventListener("load",function(){
+                        if(request.status==200){
+                            console.log(this.responseText);
+                            if(operation==1){
+                                let x=parseInt(document.getElementById("label"+val).innerHTML)
+                                x=x+1;
+                                document.getElementById("label"+val).innerHTML=x;
+
+                            }
+                            if(operation==2){
+                                let x=parseInt(document.getElementById("label"+val).innerHTML)
+                                if(x>0){
+                                    x=x-1;
+                                }
+                                document.getElementById("label"+val).innerHTML=x;   
+                            }
+                            if(operation==3){
+                                let mainContainer=document.getElementById("mainContainer"+val);
+                                // console.log("mainContainer"+val,typeof "mainContainer"+val);
+                                // console.log(mainContainer);
+                                mainContainer.remove();
+                            }
+                           // window.location="http://localhost:3000/displayCart";
+                        }
+                    })
+                }
+                function incCount(val){
+                    console.log("hello")
+                    console.log(val)
+                    makeCall('/incCount',val,1);
+                }
+                function decCount(val){
+                    makeCall('/decCount',val,2);
+                   
+
+                }
+                function deleteFromCart(val){
+                    console.log("hello deleteFromCart");
+                    console.log(val)
+                    makeCall('/deleteFromCart',val,3);
+                }
+                function description(val){
+                    console.log(val)
+                    console.log("hello description");
+                    let description=document.getElementsByClassName("description"+val)[0];
+                    description.style.display="block";
+                    document.getElementById("description"+val).innerHTML="Read Less";
+                    document.getElementById("description"+val).setAttribute("onclick",`readLess('${val}')`)
+                    
+                }
+                function readLess(val){
+                    let element=document.getElementsByClassName("description"+val)[0];
+                    element.style.display="none";
+                    let btn=document.getElementById("description"+val);
+                    btn.innerHTML="Desc";
+                    btn.setAttribute("onclick",`description('${val}')`)
+                }
+            </script>
+</body>
+</html>

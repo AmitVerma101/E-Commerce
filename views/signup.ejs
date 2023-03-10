@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link rel="stylesheet" href="login.css">
+<body>
+    <div class="contain">
+        This is the signup page
+        <form action="/signup" method="post">
+            <input type="text" placeholder="Name" name="name">
+            <input type="text" placeholder="UserName" name="username">
+            <input type="email" placeholder="email" name="email">
+            <input type="password" name="password" placeholder="Password">
+            <input type="submit" id="submit" value="SignUp">
+        </form>
+    
+        <div class="container">
+             <% if(error!='')%>
+             <p style="color:red;"><%=   error  %></p>
+        </div>
+    </div>
+  
+    <script>
+        setTimeout(function(){
+                document.getElementsByClassName("container")[0].innerHTML='';
+        },2000)
+    </script>
+
+</body>
+</html>

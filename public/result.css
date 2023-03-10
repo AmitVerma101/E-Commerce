@@ -1,0 +1,21 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.container{
+    display: flex;
+    height: 2rem;
+    justify-content: space-around;
+    background-color: black;
+    align-items: center;
+    color: white;
+    
+}
+.contain{
+    display: flex;
+    margin-left:180px;
+    margin-top: 1rem;
+}
+button {
+    padding:0.5rem 0.8rem;
+}

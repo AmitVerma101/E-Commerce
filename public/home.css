@@ -1,0 +1,31 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.container{
+    background-color: black;
+    color:white;
+    display: flex;
+    height:2rem;
+    align-items: center;
+     gap: 4rem;
+     padding-left:4rem;
+    /* justify-content: space-between; */
+}
+button {
+    background-color: white;
+    color:black;    
+    padding:0.4rem 1.5rem;
+    font-weight: 900;
+}
+h3 {
+    font-size:36px;
+}
+body {
+    background-image: url("https://media.istockphoto.com/id/1059156958/photo/pure-feelings.jpg?s=1024x1024&w=is&k=20&c=fDzMLNxXbBRBbrywwBXd3pxVWaZ-POTKLBODHIvL_sc=");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+    background-position: center;
+}
