@@ -1,7 +1,8 @@
 
-        Welcome <%= username %> 
+       <h2> Welcome <%= username %></h2> 
         <div style="display: flex;gap: 2rem;align-items: center;">
-            <button onclick="logout()">Logout</button>
-            <img src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" width="30" height="30" alt="user profile" onclick="userProfile('<%= username %>')">    
+            <button onclick="logout()" style="color:#2874F0;">Logout</button>
+            <img src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" width="30" height="30" alt="user profile" onclick="userProfile('<%= username %>')">   
+            <button onclick="displayCart() " id="showCart">Show Cart</button> 
         </div>
        

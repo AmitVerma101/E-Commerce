@@ -9,17 +9,18 @@
 </head>
 <body>
     <div class="contain">
-        This is the login page
+        <h3 style="font-family: Arial, Helvetica, sans-serif;font-weight: normal;">LOGIN</h3>
         <form action="/login" method="post">
-            <input type="text" placeholder="UserName" name="username" style="display: block;" >
-            <input type="password" name="password" style="display: block;" placeholder="Password">
+            <input type="text" placeholder="UserName" name="username" style="display: block;" required>
+            <input type="password" name="password" style="display: block;" placeholder="Password" required>
             <input type="submit" id="submit" value="LogIn">
-            <a href="/forgotPassword">Forgot Password</a>
+            <a href="/forgotPassword" style="text-align: center;">forgot password</a>
         </form>
+        <div class="container" style="height:10px;margin:0">
         <% if(error!=''){%>
-            <div class="container"> <p style="color:red;"><%= error %> </p></div>
-             <% } %>
-
+            <p style="color:red;"><%= error %> </p>
+            <% } %>
+        </div>
         <p>New to Grab? <a href="/signup">Create Account</a></p>
     </div>
    

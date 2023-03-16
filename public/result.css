@@ -6,10 +6,10 @@
     display: flex;
     height: 2rem;
     justify-content: space-around;
-    background-color: black;
+    background-color: #2874F0;
     align-items: center;
     color: white;
-    
+    padding: 1rem;
 }
 .contain{
     display: flex;

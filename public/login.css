@@ -8,19 +8,19 @@
     flex-direction: column ;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     box-shadow: 0 0 10px black;
 }
 body {
-    background-image: url("https://media.istockphoto.com/id/1059156958/photo/pure-feelings.jpg?s=1024x1024&w=is&k=20&c=fDzMLNxXbBRBbrywwBXd3pxVWaZ-POTKLBODHIvL_sc=");
+    /* background-image: url("https://media.istockphoto.com/id/1059156958/photo/pure-feelings.jpg?s=1024x1024&w=is&k=20&c=fDzMLNxXbBRBbrywwBXd3pxVWaZ-POTKLBODHIvL_sc=");
     background-repeat: no-repeat;
     background-color: rgba(255, 255, 255, 0.5);
-    background-size: cover;
+    background-size: cover; */
     width: 100vw;
     height: 100vh;
-    background-position: center;
+    /* background-position: center; */
     display: flex;
-    background-color: gray;
+    background-color: white;
     
    
     justify-content: center;
@@ -29,7 +29,8 @@ body {
 form {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    
+    gap: 1rem;
 }
 #submit {
     width: fit-content;
@@ -39,6 +40,12 @@ form {
     border-radius: 5px;;
     color: white;
     border:none;
+}
+form input {
+    font-size: 16px;
+    padding:0.2rem;
+    /* border: none;
+    border-bottom: 1px solid black; */
 }
 p{
     font-size:12px;

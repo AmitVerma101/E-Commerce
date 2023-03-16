@@ -15,10 +15,62 @@
     display: flex;
     height: 2rem;
     justify-content: space-around;
-    background-color: black;
+    background-color: #2874F0;
     align-items: center;
     color:white;
 }
 .top button {
     padding: 0.5rem 0.8rem;
+    color:#2874F0;
+    border:none;
+    
+}
+.center {
+    padding:2rem;
+    display: none;
+    box-shadow: 0 0 10px black;
+    width:80vw;
+    background-color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .mainDescription {
+    margin:0.5rem 0;
+  }
+  .ratings{
+    width: fit-content;
+    background-color: green;
+    color:white;
+    padding:0.1rem;
+    margin-bottom:0.5rem;
+  }
+  .innerContainer{
+    display: flex;
+  }
+  .description {
+    margin-bottom:0.5rem;
+  }
+  .element1 {
+    flex-basis: 50%;
+  }
+  .element2 {
+    flex-basis: 50%;
+  }
+  .element2 table {
+    width:80%;
+  }
+  .header{
+    display: flex;
+    height: 2rem;
+    justify-content: space-around;
+    background-color: #2874F0;
+    align-items: center;
+    color: white;
+    padding: 1rem;
+}
+.header button {
+  padding : 0.5rem 0.8rem;
+  color:#2874F0;
 }
