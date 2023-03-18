@@ -14,7 +14,7 @@ const sendMail= async (req,res,val,email)=>{
         to: email, // list of receivers
         subject: "Hello ✔", // Subject line
         text: "Hello world?", // plain text body
-        html: `<b>Hello world?</b> <a href="http://localhost:3000/verifyEmail/${val}">click here</a>`, // html body
+        html: `<b>Hello world?</b> <a href="http://localhost:5000/verifyEmail/${val}">click here</a>`, // html body
       });
    // res.json(info);
 }
