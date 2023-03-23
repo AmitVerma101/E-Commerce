@@ -18,6 +18,7 @@ button {
     padding:0.4rem 1.5rem;
     font-weight: 900;
     border:none;
+    margin: 0 1rem;
 }
 h3 {
     font-size:36px;

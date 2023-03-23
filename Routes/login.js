@@ -1,5 +1,7 @@
 const User=require('../userSchema');
 const findFunction=require('../Database/find')
+const mongo=require('../Database/mongo')
+
 // const sendMail=require('../middlewares/sendMail')
 
 const express=require('express');
@@ -12,7 +14,8 @@ router.route('/').get(async(req,res)=>{
         res.render("login",{error:''})
     }
     else {
-        let value=await findFunction("username",req.session.username)
+        let value=await mongo.findUser("username",req.session.username);
+        // let value=await findFunction("username",req.session.username)
         value=value[0].isVerified
        if(req.session.isLoggedIn==true&&value){
            res.redirect("/products");
@@ -32,7 +35,8 @@ router.route('/').get(async(req,res)=>{
         res.render('login',{error:'Fields cant be empty'});
         return;
     }
-    let obj= await findFunction("username",username)
+    let obj= await mongo.findUser("username",username)
+    // let obj= await findFunction("username",username)
     
             if(obj.length!=0){
                 console.log("printing the obj")

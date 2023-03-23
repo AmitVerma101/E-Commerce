@@ -64,6 +64,8 @@
                     <div style="display: flex; justify-content: space between; margin: 5px; width: match-parent;">
                         <button onclick="deleteFromCart('<%= value.id %>' )" style="padding:0.5rem 0.8rem; margin-right: 5px; background-color: blue; color:white; border: none;">Remove</button>
                         <button onclick='showDescription("<%= value.id %>")' id="description<%= value.id %>" style="padding:0.5rem 0.8rem;background-color: blue; color:white;border: none;">Desc</button>
+                        <button onclick='placeOrder("<%= value.id %>","<%= value.username%>","<%= arr[index].quantity%>")' id="placeOrder<%= value.id %>"
+                            style="padding:0.5rem 0.8rem;background-color: blue;margin:0 0.3rem; color:white;border: none;">Order</button>
                     </div>
                 </div>
 
@@ -72,6 +74,7 @@
             </div>
 
             <script>
+
                 let showCart=document.getElementById("showCart");
                 showCart.remove();
                 let element1=document.getElementsByClassName("element1")[0]
@@ -79,6 +82,17 @@
                 let ratings=document.getElementsByClassName("ratings")[0]
                 let description=document.getElementsByClassName("description")[0]
                 let table=document.getElementById("table")
+                function placeOrder(val1,val2,val3){
+                    console.log(val1,val2,val3)
+                    let request=new XMLHttpRequest
+                    request.open('POST','/placeOrder');
+                    request.setRequestHeader('Content-Type','application/json');
+                    request.send(JSON.stringify({id:val1,sellerName:val2,quantity:val3}))
+                    request.addEventListener('load',function(){
+                        console.log(this.responseText);
+                        deleteFromCart(val1);
+                    })
+                }
                 function  makeCall(link,val,operation){
                     let request=new XMLHttpRequest()
                     request.open('POST',link);
@@ -163,6 +177,12 @@
                 function hideTheScreen(){
             let center=document.getElementsByClassName("center")[0];
             center.style.display="none";
+        }
+        function showOrders(){
+            window.location='http://localhost:5000/showOrders'
+        }
+        function adminPanel(){
+               window.location='http://localhost:5000/adminPanel';
         }
                 function readLess(val){
                     let element=document.getElementsByClassName("description"+val)[0];

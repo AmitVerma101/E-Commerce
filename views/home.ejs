@@ -11,7 +11,10 @@
             <!-- <button onclick="signup()">SignUp</button> -->
             <div class="container">
                 <h3>Grab</h3>
-                <button onclick="login()">Login</button>
+                <div>
+                    <button onclick="login()">Login</button>
+                    <button onclick="seller()">Seller</button>
+                </div>
 
             </div>
           
@@ -24,6 +27,9 @@
                 }
                 function login(){
                     window.location.href="http://localhost:5000/login";
+                }
+                function seller(){
+                    window.location.href="http://localhost:5000/sellerLogin";
                 }
             </script>
 </body>

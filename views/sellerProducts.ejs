@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Products</title>
+    <link rel="stylesheet" href="products.css">
+</head>
+
+<body>
+    <div class="form">
+        <form action="/addSellerProduct" method="post" id="form" enctype="multipart/form-data">
+            <input type="text" name="id" id="readonly" readonly>
+            <input type="text" name="name" placeholder="product name" id="name" required>
+            <input type="text" name="descMain" placeholder="descMain" id="descMain" required>
+            <input type="number" name="Rating" placeholder="rating" id="rating" required>
+            <input type="description" name="description" id="description" placeholder="description" required>
+            <input type="number" name="warranty" id="warranty" placeholder="warranty" required>
+            <input type="text" name="color" id="color" placeholder="color" required>
+            <input type="number" name="RAM" id="ram" placeholder="RAM" required>
+            <input type="file" name="image" id="image" required>
+            <input type="submit" value="Add Product" onclick="hideScreen()">
+        </form>
+    </div>
+    <div class="center">
+        <div class="innerContainer">
+            <div class="element1">
+               
+                <img src="" alt="image">
+            </div>
+            <div class="element2">
+                <div class="mainDescription">
+                        Adding the description
+                </div>
+                <div class="ratings">
+                    hello ratings
+                </div>
+                <div class="description">
+
+                </div>
+                <table id="table">
+                    <tr>
+                        <td>Warranty</td>
+                        <td>nothing</td>
+                    </tr>
+                    <tr>
+                        <td>Color</td>
+                        <td>nothing</td>
+                    </tr>
+                     <tr>
+                        <td>RAM</td>
+                        <td>hy</td>
+                    </tr>
+                   
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <div class="header">
+        <%- include('partials/header',{user:username});  %>
+    </div>
+   
+   
+     <div class="container" >
+       
+     </div>
+     <!-- <div class="button" style="width: 80vw; margin: 1rem auto;">
+        <button onclick="fetchMoreProducts()" style="padding:0.5rem 0.8rem; background-color: blue;color:white;margin-left: 35px;">Fetch More</button>
+     </div> -->
+   
+     <script>
+        let element1=document.getElementsByClassName("element1")[0]
+        let mainDescription=document.getElementsByClassName("mainDescription")[0]
+        let ratings=document.getElementsByClassName("ratings")[0]
+        let description=document.getElementsByClassName("description")[0]
+        let table=document.getElementById("table")
+        let Add=document.getElementById('showCart')
+        Add.innerHTML='Add New';
+
+
+
+        let productsArray=[];
+        let container=document.getElementsByClassName("container")[0];
+        function fetchMoreProducts(){
+            let request=new XMLHttpRequest();
+            request.open('get','/fetchSellerProducts')
+            request.send();
+
+            request.addEventListener('load',function(){
+                console.log(this.responseText)
+                loadMoreData(JSON.parse(this.responseText))
+            })
+        }
+       
+        function loadMoreData(arr){
+                 copyData(arr);
+                 console.log("printing the products array")
+                 console.log(productsArray);
+                arr.forEach(function(value){
+                    let element=document.createElement("div");
+                    element.style.boxShadow="0 0 10px black"
+                    element.style.padding='0.2rem'
+                    element.style.width="70%"
+                    element.style.margin="0 auto"
+                  //  element.style.backgroundColor="#aaa";
+                    let heading=document.createElement("h2");
+                    heading.style.textAlign="center"
+                    let image=document.createElement("img");
+                   // image.style.width='90%'
+                    image.style.height='35vh';
+                    image.style.margin="0 auto";
+                    let innerDiv=document.createElement("div");
+                    let btn=document.createElement("button");
+                    let btn2=document.createElement("button")
+                    let btn3=document.createElement("button");
+                    btn.style.padding="0.5rem 0.8rem";
+                    btn.style.backgroundColor='blue';
+                    btn.style.color="white"
+                    btn2.style.padding="0.5rem 0.8rem";
+                    btn2.style.backgroundColor='blue';
+                    btn2.style.color="white"
+                    btn.style.margin="0.2rem";
+                    btn2.style.margin="0.2rem"
+                    btn3.style.padding="0.5rem 0.8rem"
+                    btn3.style.backgroundColor='blue'
+                    btn3.style.color="white"
+                    btn3.style.margin="0.2rem";
+                    // btn.style.display="block"
+                    // btn.style.margin="0 auto"
+                    btn2.innerHTML="Update"
+                    btn.innerHTML="Details";
+                    btn3.innerHTML='delete';
+                    btn2.setAttribute("onclick",`updateProduct("${value.id}")`)
+                    btn3.setAttribute("onclick",`deleteProduct("${value.id}")`)
+                    innerDiv.appendChild(btn)
+                    innerDiv.appendChild(btn2)
+                    innerDiv.appendChild(btn3);
+                    innerDiv.style.display="flex"
+                    innerDiv.style.justifyContent="space-between"
+                    
+                    btn.setAttribute("onclick",`addDescription("${value.id}")`);
+                    element.setAttribute("id",`${value.id}`)
+                    image.setAttribute("src",value.image);
+                    image.style.display="block";
+                    heading.innerHTML=value.name
+                    element.appendChild(image)
+                 //   element.appendChild(heading);
+                    
+                    element.appendChild(innerDiv);
+                    container.appendChild(element)
+                })
+        }
+        function userProfile(val){
+           window.location="http://localhost:5000/changePassword";
+        }
+        function addDescription(val){
+            let center =document.getElementsByClassName("center")[0];
+            center.style.display="block";
+            center.setAttribute("onclick","hideTheScreen()");
+            let index;
+            for(let i=0;i<productsArray.length;i++){
+                if(productsArray[i].id==val){
+                    index=i;
+                }
+            }
+            let ele=productsArray[index].description[0];
+            mainDescription.innerHTML=ele.descMain;
+            ratings.innerHTML=ele.Rating
+            description.innerHTML=ele.description
+            let image=element1.children[0];
+            image.setAttribute("src",`${productsArray[index].image}`)
+            let tableElement=table.children;
+            console.log(tableElement)
+            tableElement[0].children[0].children[1].innerHTML=ele.warranty;
+            tableElement[0].children[1].children[1].innerHTML=ele.color;
+            tableElement[0].children[2].children[1].innerHTML=ele.RAM;
+
+            console.log(tableElement[0].children[0].children[1].innerHTML)
+            // let div=document.createElement("div");
+            // div.setAttribute("class","center")
+            // div.innerHTML='Your history will show up here. Not seeing what you expected? Try logging out and back in.'
+            // document.body.appendChild(div);
+            // let element=document.getElementById(val);
+            // let desc=productsArray[index].description;
+            // let descEle=document.createElement("p");
+            // console.log(element);
+            // descEle.innerHTML=desc;
+            // element.insertBefore(descEle,element.children[1]);
+            // console.log(element.children[2].children[0])
+            // element.children[2].children[0].innerHTML="Read Less";
+            // element.children[2].children[0].setAttribute("onclick",`removeDescription(${val})`);
+            // console.log(desc);
+            // console.log(element.children);
+        }
+        function hideTheScreen(){
+            let center=document.getElementsByClassName("center")[0];
+            center.style.display="none";
+        }
+        function copyData(val){
+            val.forEach(function(value){
+                productsArray.push(value);
+            })
+        }
+        function removeDescription(val){
+            let element=document.getElementById(val);
+            element.children[1].remove();
+            element.children[1].children[0].innerHTML="Details";
+            element.children[1].children[0].setAttribute("onclick",`addDescription(${val})`);
+        }
+        fetchMoreProducts();
+
+        function updateProduct(val){
+                console.log(val)
+                let index;
+            for(let i=0;i<productsArray.length;i++){
+                if(productsArray[i].id==val){
+                    index=i;
+                }
+            }
+            let name=document.getElementById('name');
+            let descMain=document.getElementById('descMain');
+            let warranty=document.getElementById('warranty');
+            let color=document.getElementById('color')
+            let ram=document.getElementById('ram');
+            let description=document.getElementById('description')
+            let rating=document.getElementById('rating');
+            let form=document.getElementById('form');
+            form.setAttribute('action','/updateProduct')
+            let readonly=document.getElementById('readonly');
+            readonly.setAttribute('value',val);
+            // name.setAttribute('sendingId',val);
+            name.value=productsArray[index].name
+            descMain.value=productsArray[index].description[0].descMain
+            description.value=productsArray[index].description[0].description
+            warranty.value=productsArray[index].description[0].warranty
+            color.value=productsArray[index].description[0].color
+            ram.value=productsArray[index].description[0].ram
+            rating.value=productsArray[index].description[0].rating
+            let element=document.getElementsByClassName('form')[0];
+            element.style.display='block';
+               
+        }
+        function logout(){
+            window.location="http://localhost:5000/logout"
+        }
+
+        function displayCart(){
+           let form=document.getElementsByClassName('form')[0];
+           form.style.display='block';
+           let element=document.getElementById('form');
+           element.setAttribute('action','/addSellerProduct')
+        //    form.setAttribute("onclick","hideScreen()");
+        }
+        function hideScreen(){
+            let form=document.getElementsByClassName('form')[0];
+            form.style.display='none';
+            console.log(document.getElementById("image"));
+            // fetchMoreProducts();
+        }
+        function deleteProduct(val){
+            console.log(val);
+            let request=new XMLHttpRequest;
+            request.open('POST','/deleteProduct');
+            request.setRequestHeader('Content-Type','application/json')
+            request.send(JSON.stringify({id:val}));
+            request.addEventListener('load',function(){
+                console.log(this.responseText)
+                // fetchMoreProducts();
+                window.location='http://localhost:5000/sellerLogin'
+            })
+        }
+        function showOrders(){
+            window.location='http://localhost:5000/sellerOrders';
+        }
+     </script>
+</body>
+</html>

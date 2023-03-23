@@ -78,7 +78,9 @@
                 loadMoreData(JSON.parse(this.responseText))
             })
         }
-
+        function adminPanel(){
+               window.location='http://localhost:5000/adminPanel';
+        }
         function loadMoreData(arr){
                  copyData(arr);
                  console.log("printing the products array")
@@ -146,7 +148,7 @@
             let ele=productsArray[index].description[0];
             mainDescription.innerHTML=ele.descMain;
             ratings.innerHTML=ele.Rating
-            description.innerHTML=ele.Description
+            description.innerHTML=ele.description
             let image=element1.children[0];
             image.setAttribute("src",`${productsArray[index].image}`)
             let tableElement=table.children;
@@ -203,6 +205,9 @@
         }
         function logout(){
             window.location="http://localhost:5000/logout"
+        }
+        function showOrders(){
+            window.location='http://localhost:5000/showOrders'
         }
 
         function displayCart(){

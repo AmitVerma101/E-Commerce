@@ -1,5 +1,6 @@
 const User=require('../userSchema');
 const findFunction=require('../Database/findProduct')
+const mongo=require('../Database/mongo')
 // const sendMail=require('../middlewares/sendMail')
 
 const express=require('express');
@@ -11,7 +12,8 @@ router.post('/',async(req,res)=>{
     }
     else{
         req.session.products++;
-        let obj= await findFunction(req.session.products,5)
+        let obj=await mongo.findProduct(req.session.products,5);
+        // let obj= await findFunction(req.session.products,5)
         console.log("printing the object")
         console.log(obj)
         res.json(obj);

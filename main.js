@@ -2,14 +2,28 @@ const express =require('express')
 const fs=require('fs')
 const bodyParser = require('body-parser')
 const app=express();
+let crypto=require('crypto')
+const sellerMail=require('./middlewares/sellerMail')
+const multer=require('multer')
+const sql = require('mssql');
+
 //making connections with db
+let pool;
+
+// test();
+
 const mongoose=require('mongoose')
 const User=require('./userSchema')
+const Seller=require('./sellerSchema')
+const Order=require('./orderSchema');
+const sellerProduct=require('./sellerProductSchema');
 const Product=require('./productSchema')
 const home=require('./Routes/home')
+const upload = multer({ dest: 'products/' })
 const signup=require('./Routes/signup')
 const login=require('./Routes/login')
 const product=require('./Routes/product')
+const sellerLogin=require('./Routes/sellerLogin')
 const fetchMoreProducts=require('./Routes/fetchMoreProducts')
 const verifyEmail=require('./Routes/verifyEmail')
 const changePassword=require('./Routes/changePassword')
@@ -21,6 +35,17 @@ const incCount=require('./Routes/incCount')
 const decCount=require('./Routes/decCount')
 const deleteFromCart=require('./Routes/deleteFromCart')
 const getDetails=require('./Routes/getDetails')
+const adminPanel=require('./Routes/adminPanel')
+const AddSeller=require('./Routes/AddSeller')
+const fetchSellerProducts=require('./Routes/fetchSellerProducts')
+const addSellerProduct=require('./Routes/addSellerProduct')
+const updateProduct= require('./Routes/updateProduct');
+const deleteProduct= require('./Routes/deleteProduct');
+const placeOrder=require('./Routes/placeOrder');
+const showOrders=require('./Routes/showOrders')
+const sellerOrders= require('./Routes/sellerOrders')
+const resolveRequest=require('./Routes/resolveRequest');
+const rejectRequest=require('./Routes/rejectRequest');
 mongoose.connect("mongodb://127.0.0.1:27017/ECommerce").then(function(){
     console.log("connected successfully")
 })
@@ -59,9 +84,157 @@ app.use('/incCount',incCount);
 app.use('/decCount',decCount);
 app.use('/deleteFromCart',deleteFromCart);
 app.use('/getDetails',getDetails)
+app.use('/sellerLogin',sellerLogin)
+app.use('/adminPanel',adminPanel);
+app.use('/AddSeller',AddSeller);
+app.use('/fetchSellerProducts',fetchSellerProducts);
+app.use('/addSellerProduct',addSellerProduct);
+app.use('/updateProduct',updateProduct);
+app.use('/deleteProduct',deleteProduct);
+app.use('/placeOrder',placeOrder)
+app.use('/showOrders',showOrders)
+app.use('/sellerOrders',sellerOrders);
+app.use('/resolveRequest',resolveRequest);
+app.use('/rejectRequest',rejectRequest);
 //creating routes 
 
 
+
+// app.get('/sellerLogin',(req,res)=>{
+//     if(req.session.isLoggedIn==true){
+//         res.render("sellerProducts",{username:req.session.username});
+//         return;
+//     }
+//     res.render("sellerLogin",{error:''})
+// })
+// app.post('/sellerLogin',async (req,res)=>{
+//     if(req.session.isLoggedIn==true){
+//         res.render('sellerProducts',{username:req.session.username});
+//         return;
+//     }
+//  let obj= await Seller.find({username:req.body.username},{password:req.body.password});
+//      if(obj.length==1){
+//         req.session.isLoggedIn=true;
+//         req.session.username=req.body.username;
+//         res.render("sellerProducts",{username:req.session.username});
+//      }
+//      else {
+//         res.render('sellerLogin',{error:'Wrong username or password'});
+//      }
+// })
+// app.get('/adminPanel',(req,res)=>{
+//     if(req.session.username!='Admin'){
+//         res.end("You do not have permission to access the page")
+//     }
+//     else {
+//         res.render("adminPanel",{error:''});
+//     }
+// })
+// app.post('/AddSeller',async (req,res)=>{
+//     if(req.session.username!='Admin'){
+//         res.end("You do not have the authorization to access the page");
+//     }
+//     else {
+//         let username="Seller"+crypto.randomBytes(4).toString('hex');
+//         let password=crypto.randomBytes(5).toString('hex');
+//         let seller=new Seller({name:req.body.name,username:username,email:req.body.email,password:password})
+//          await seller.save()
+//          sellerMail(req,res,req.body.email,username,password);
+//          res.render("adminPanel",{error:'Saved Successfully'});
+//     }
+// })
+// app.get('/fetchSellerProducts',async(req,res)=>{
+//      let obj=await Product.find({username:req.session.username})
+//      res.json(obj);
+// })
+// app.post('/addSellerProduct',upload.single('image'),async(req,res)=>{
+//     let image=req.file.filename;
+//     const {name,descMain,Rating,description,warranty,color,RAM}=req.body;
+//      let product = new sellerProduct({name,descMain,Rating,description,warranty,color,RAM,image,username:req.session.username})
+//      await product.save();
+//      let arr={descMain:descMain,Rating:Rating,description:description,warranty:warranty,color:color,RAM:RAM};
+//      let p= new Product({name:name,image:image,username:req.session.username,id:crypto.randomBytes(3).toString('hex')});
+//      await p.save();
+//     await Product.updateOne({name:name,username:req.session.username},{$push:{description:arr}})
+//     console.log("saved successfully");
+//     res.render("sellerProducts",{username:req.session.username});
+// })
+// app.post('/updateProduct',upload.single('image'),async (req,res)=>{
+//     let image=req.file.filename;
+//     let {id,name,descMain,Rating,description,warranty,color,RAM}=req.body;
+//     let arr={descMain,Rating,description,warranty,color,RAM}
+
+//    await  Product.updateOne({id:id},{name:name,image:image,description:arr});
+// //    await Product.updateOne({id:id},{description:arr});
+//    res.render("sellerProducts",{username:req.session.username})
+
+// })
+// app.post('/deleteProduct',async (req,res)=>{
+//     let id=(req.body.id)
+//     console.log(req.body)
+//     console.log(id)
+//     // console.log(id)
+//     // console.log("In the delete Product section")
+//     await Product.deleteOne({id:id});
+//     res.end("Record deleted successfully")
+// })
+
+// app.post('/placeOrder',async (req,res)=>{
+//         console.log("In the place order end point")
+//         let {id,sellerName,quantity} = req.body;
+//         console.log(id,sellerName);
+//         let order=new Order({id:crypto.randomBytes(3).toString('hex'),username:req.session.username,sellerName:sellerName,productId:id,status:0,quantity:quantity});
+//         await order.save();
+
+//         res.end("order saved successfully");
+//         // let product=await Product.findOne({id:id})
+//         // console.log(product)
+// })
+// app.get('/showOrders',async (req,res)=>{
+//     console.log("In the show orders function")
+//     console.log(req.session.username);
+//     let orders= await  Order.find({username:req.session.username})
+   
+//     let newArrFinal= await getOrderInArray(orders);
+//     console.log("printing the newArrFinal")
+//     console.log(newArrFinal);
+//     console.log("printing the orders array")
+//     console.log(orders)
+//     res.render("order",{products:newArrFinal,arr:orders,username:req.session.username})
+// })
+// app.get('/sellerOrders',async (req,res)=>{
+    
+//     let order=await Order.find({sellerName:req.session.username,status:0});
+//     console.log(order)
+//     let array=[]
+//     for(let i=0;i<order.length;i++){
+//         let product=await Product.find({id:order[i].productId})
+//         array.push(product[0]);
+//     }
+
+//     res.render('sellerOrders',{products:array,arr:order,username:req.session.username})
+    
+// })
+// async function getOrderInArray(orders){
+//     let array = [];
+//     for(let i = 0 ;i< orders.length;++i){
+//         console.log("here");
+//          let product= await Product.find({id:orders[i].productId});
+//          console.log(product[0]);
+//          array.push(product[0]);
+//     }
+//     return array;
+// }
+// app.post('/resolveRequest',async (req,res)=>{
+//     console.log(req.body.id);
+//     await Order.updateOne({id:req.body.id},{status:1});
+//     res.end('success')
+// })
+// app.post('/rejectRequest',async (req,res)=>{
+//     console.log(req.body.id)
+//     await Order.updateOne({id:req.body.id},{status:-1})
+//     res.end('success');
+// })
 // app.get('/',(req,res)=>{
 //     if(req.session.isLoggedIn==true&&req.session.isVerified==true){
 //         res.redirect("/result");
@@ -804,3 +977,6 @@ const port=5000
 app.listen(port,()=>{
     console.log("App Running at port http://localhost:"+port);
 })
+// console.log("Printing the value of pool in  the main file")
+// console.log(pool);
+// module.exports= {test};

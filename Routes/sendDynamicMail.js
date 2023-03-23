@@ -1,10 +1,10 @@
 const express=require('express');
 const router=express.Router()
 const findFunction=require('../Database/find')
-
+const mongo=require('../Database/mongo');
 router.post('/',async (req,res)=>{
-
-    let obj= await findFunction("email",req.body.email);
+    let obj= await mongo.findUser("email",req.body.email);
+    // let obj= await findFunction("email",req.body.email);
 
         if(obj.length!=0){
             if(obj[0].isVerified){

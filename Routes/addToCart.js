@@ -2,14 +2,16 @@ const express=require('express');
 const router=express.Router()
 const findFunction=require('../Database/find')
 const updateFunction=require('../Database/updateProduct')
+const mongo=require('../Database/mongo')
 
 router.post('/',async (req,res)=>{
     if(req.session.id==undefined){
         res.end("Not authorized");
     }
     else {
-        let id=JSON.parse(req.body.id)
-        let data= await findFunction("username",req.session.username)   
+        let id=req.body.id
+        let data = await mongo.findUser("username",req.session.username);
+        // let data= await findFunction("username",req.session.username)   
         if(data.length!=0){
             let x;
             for(let j=0;j<data[0].products.length;j++){
@@ -18,7 +20,8 @@ router.post('/',async (req,res)=>{
                 }
             }
             if(x==undefined){
-                await updateFunction("username",req.session.username,id)
+                await mongo.updateProduct("username",req.session.username,id);
+                // await updateFunction("username",req.session.username,id)
                     console.log("Successfully updated");
                 }
             }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="contain">
+        <h3 style="font-family: Arial, Helvetica, sans-serif;font-weight: normal;">LOGIN</h3>
+        <form action="/AddSeller" method="post">
+            <input type="text" placeholder="Name of Seller" name="name" style="display: block;" required>
+            <input type="email" name="email" style="display: block;" placeholder="email" required>
+            <input type="submit" id="submit" value="Add">
+            <!-- <a href="/forgotPassword" style="text-align: center;">forgot password</a> -->
+        </form>
+        <div class="container" style="height:10px;margin:0">
+        <% if(error!=''){%>
+            <p style="color:red;"><%= error %> </p>
+            <% } %>
+        </div>
+        <p>New to Grab? <a href="/signup">Create Account</a></p>
+    </div>
+   
+
+
+   
+    <script>
+       setTimeout(function(){
+        console.log(document.getElementsByClassName("container")[0])
+        document.getElementsByClassName("container")[0].innerHTML=''
+       },2000);
+    </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 const User=require('../userSchema');
 const findFunction=require('../Database/find')
+const mongo= require('../Database/mongo')
 // const sendMail=require('../middlewares/sendMail')
 
 const express=require('express');
@@ -10,7 +11,8 @@ router.get('/',async(req,res)=>{
         res.render("login",{error:"Login First to fetch the products Page"});
     }
     else{
-        let obj= await findFunction("username",req.session.username)
+        let obj= await mongo.findUser("username",req.session.username)
+        // let obj= await findFunction("username",req.session.username)
         obj=obj[0].isVerified;
     
     if(req.session.isLoggedIn==true&&obj){
