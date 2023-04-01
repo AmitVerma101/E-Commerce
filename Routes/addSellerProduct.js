@@ -6,19 +6,22 @@ const app=express();
 const upload = multer({ dest: 'products/' })
 app.use(bodyParser.urlencoded({ extended: true }));
 const router=express.Router()
-const findFunction=require('../Database/find')
+//const findFunction=require('../Database/find')
 const mongo=require('../Database/mongo')
+const sql=require('../Database/sql');
+require('dotenv').config();
+let database = process.env.database;
 router.post('/',upload.single('image'),async (req,res)=>{
     let image=req.file.filename;
-     const {name,descMain,Rating,description,warranty,color,RAM}=req.body;
-    //  let product = new sellerProduct({name,descMain,Rating,description,warranty,color,RAM,image,username:req.session.username})
-    //  await product.save();
-     let arr={descMain:descMain,Rating:Rating,description:description,warranty:warranty,color:color,RAM:RAM};
+     const {name,descMain,Rating,description,warranty,color,RAM,stocks}=req.body;
+     let arr={descMain:descMain,Rating:Rating,description:description,warranty:warranty,color:color,RAM:RAM,stocks:stocks};
      let val={name:name,image:image,username:req.session.username,id:crypto.randomBytes(3).toString('hex')};
-     await mongo.createProduct(val,arr);
-    //  let p= new Product({name:name,image:image,username:req.session.username,id:crypto.randomBytes(3).toString('hex')});
-    //  await p.save();
-    // await Product.updateOne({name:name,username:req.session.username},{$push:{description:arr}})
+     if(database == 'sql'){
+         await sql.createProduct(val,arr);
+     }
+     else {
+         await mongo.createProduct(val,arr);
+     }
     console.log("saved successfully");
     res.render("sellerProducts",{username:req.session.username});
 })

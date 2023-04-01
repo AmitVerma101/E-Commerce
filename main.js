@@ -7,6 +7,11 @@ const sellerMail=require('./middlewares/sellerMail')
 const multer=require('multer')
 const sql = require('mssql');
 
+require("dotenv").config();
+
+console.log("Printing the value of dotenv");
+console.log(process.env.database);
+
 //making connections with db
 let pool;
 

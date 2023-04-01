@@ -3,8 +3,9 @@
     padding:0;
 }
 .container{
+    margin-top: 10px;
     width: 80vw;
-    
+    /* background-color: white; */
     /* background-color: green; */
     display: grid;
     gap: 1rem;
@@ -24,6 +25,14 @@
     color:#2874F0;
     border:none;
     
+}
+body {
+  background-image: url("wallpaper.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+   background-position: center center; 
 }
 .center {
     padding:2rem;

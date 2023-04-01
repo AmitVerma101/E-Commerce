@@ -62,8 +62,8 @@
                     </div>
                     <div style="display: flex; justify-content: space between; margin: 5px; width: match-parent;">
                         
-                     <button onclick='resolve("<%= arr[index].id %>")'>Resolve</button>
-                     <button onclick='reject("<%= arr[index].id %>")'>Reject</button>
+                     <button onclick='resolve("<%= arr[index].id %>","<%= arr[index].productId %>")'>Resolve</button>
+                     <button onclick='reject("<%= arr[index].id %>","<%= arr[index].productId %>")'>Reject</button>
                      
                     </div>
                 </div>
@@ -84,21 +84,21 @@
                 function resolve(){
 
                 }
-                function resolve(val){
+                function resolve(val1,val2){
                     let request=new XMLHttpRequest
                     request.open('POST','/resolveRequest');
                     request.setRequestHeader('Content-Type','application/json');
-                    request.send(JSON.stringify({id:val}));
+                    request.send(JSON.stringify({id:val1,productId:val2}));
                     request.addEventListener('load',function(){
                         console.log(this.responseText);
                         window.location='http://localhost:5000/sellerOrders'
                     })
                 }
-                function reject(val){
+                function reject(val1,val2){
                     let request=new XMLHttpRequest
                     request.open('POST','/rejectRequest');
                     request.setRequestHeader('Content-Type','application/json');
-                    request.send(JSON.stringify({id:val}));
+                    request.send(JSON.stringify({id:val1,productId:val2}));
                     request.addEventListener('load',function(){
                         console.log(this.responseText);
                         window.location='http://localhost:5000/sellerOrders';

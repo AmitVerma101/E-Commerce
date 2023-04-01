@@ -1,7 +1,9 @@
 const User=require('../userSchema');
 const findFunction=require('../Database/find')
 const mongo=require('../Database/mongo')
-
+const sql=require('../Database/sql');
+require('dotenv').config();
+let database = process.env.database;
 // const sendMail=require('../middlewares/sendMail')
 
 const express=require('express');
@@ -14,7 +16,16 @@ router.route('/').get(async(req,res)=>{
         res.render("login",{error:''})
     }
     else {
-        let value=await mongo.findUser("username",req.session.username);
+      //  let value=await mongo.findUser("username",req.session.username);
+      let value;
+        if(database == 'sql'){
+            value = await sql.findUser("username",req.session.username);
+        }
+        else {
+            value = await mongo.findUser("username",req.session.username); 
+        }
+        console.log("Printing the value inside the login function")
+        console.log(value);
         // let value=await findFunction("username",req.session.username)
         value=value[0].isVerified
        if(req.session.isLoggedIn==true&&value){
@@ -35,7 +46,16 @@ router.route('/').get(async(req,res)=>{
         res.render('login',{error:'Fields cant be empty'});
         return;
     }
-    let obj= await mongo.findUser("username",username)
+   // let obj= await mongo.findUser("username",username)
+   let obj;
+   if(database == 'sql'){
+       obj = await sql.findUser("username",username);
+   }
+   else {
+       obj = await mongo.findUser("username",username);
+   }
+    console.log("Printing the obj2 in the login endpoint")
+    console.log(obj);
     // let obj= await findFunction("username",username)
     
             if(obj.length!=0){

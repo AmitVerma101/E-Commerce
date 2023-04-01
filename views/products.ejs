@@ -88,6 +88,7 @@
                 arr.forEach(function(value){
                     let element=document.createElement("div");
                     element.style.boxShadow="0 0 10px black"
+                    // element.style.backgroundColor="white";
                     element.style.padding='0.2rem'
                     element.style.width="70%"
                     element.style.margin="0 auto"
@@ -97,6 +98,7 @@
                     let image=document.createElement("img");
                    // image.style.width='90%'
                     image.style.height='35vh';
+                    image.style.width='100% '
                     image.style.margin="0 auto";
                     let innerDiv=document.createElement("div");
                     let btn=document.createElement("button");
@@ -200,6 +202,9 @@
                 request.addEventListener("load",function(){
                     if(request.status==200){
                         console.log("hello");
+                    }
+                    else {
+                        alert("Stocks not available");
                     }
                 })
         }

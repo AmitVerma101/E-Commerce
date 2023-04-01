@@ -1,196 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cart Details</title>
-    <link rel="stylesheet" href="products.css">
-</head>
-<body>
-    <div class="header">
-        <%- include('partials/header',{user:username});  %>
-    </div>
+    <link rel="stylesheet" href="products.css" />
+  </head>
+  <body>
+    <div class="header"><%- include('partials/header',{user:username}); %></div>
     <div class="center">
-        <div class="innerContainer">
-            <div class="element1">
-               
-                <img src="" alt="image">
-            </div>
-            <div class="element2">
-                <div class="mainDescription">
-                        Adding the description
-                </div>
-                <div class="ratings">
-                    hello ratings
-                </div>
-                <div class="description">
-
-                </div>
-                <table id="table">
-                    <tr>
-                        <td>Warranty</td>
-                        <td>nothing</td>
-                    </tr>
-                    <tr>
-                        <td>Color</td>
-                        <td>nothing</td>
-                    </tr>
-                     <tr>
-                        <td>RAM</td>
-                        <td>hy</td>
-                    </tr>
-                   
-                </table>
-            </div>
-
+      <div class="innerContainer">
+        <div class="element1">
+          <img src="" alt="image" />
         </div>
+        <div class="element2">
+          <div class="mainDescription">Adding the description</div>
+          <div class="ratings">hello ratings</div>
+          <div class="description"></div>
+          <table id="table">
+            <tr>
+              <td>Warranty</td>
+              <td>nothing</td>
+            </tr>
+            <tr>
+              <td>Color</td>
+              <td>nothing</td>
+            </tr>
+            <tr>
+              <td>RAM</td>
+              <td>hy</td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
     <div class="container">
-        <% products.forEach(function(value,index){ %>
-            <div id="mainContainer<%= value.id %>" style="width:80%;display: flex;align-items: center; flex-direction: column;">
-                <img src="<%= value.image %>" alt="">
-                <p style="text-align: center;"><%= value.name %></p>
-                <div>
-                    <label >quantity: </label>
-                    <label id="label<%= value.id %>"><%= arr[index].quantity %></label>
-                    <button onclick='incCount("<%= value.id %>")' style="width: 15px;">+</button>
-                    <button onclick='decCount("<%= value.id %>")' style="width: 15px;">-</button>
-                </div>
-                <div>
-                    <div class="description<%= value.id%>" style="display: none;">
-                        <p><%= value.description %></p>
-                    </div>
-                    <div style="display: flex; justify-content: space between; margin: 5px; width: match-parent;">
-                        <button onclick="deleteFromCart('<%= value.id %>' )" style="padding:0.5rem 0.8rem; margin-right: 5px; background-color: blue; color:white; border: none;">Remove</button>
-                        <button onclick='showDescription("<%= value.id %>")' id="description<%= value.id %>" style="padding:0.5rem 0.8rem;background-color: blue; color:white;border: none;">Desc</button>
-                        <button onclick='placeOrder("<%= value.id %>","<%= value.username%>","<%= arr[index].quantity%>")' id="placeOrder<%= value.id %>"
-                            style="padding:0.5rem 0.8rem;background-color: blue;margin:0 0.3rem; color:white;border: none;">Order</button>
-                    </div>
-                </div>
+      <% products.forEach(function(value,index){ %>
+      <div
+        id="mainContainer<%= value.id %>"
+        style="
+          width: 80%;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+        "
+      >
+        <img src="<%= value.image %>" alt="" />
+        <p style="text-align: center"><%= value.name %></p>
+        <div>
+          <label>quantity: </label>
+          <label id="label<%= value.id %>"><%= arr[index].quantity %></label>
+          <button onclick='incCount("<%= value.id %>")' style="width: 15px">
+            +
+          </button>
+          <button onclick='decCount("<%= value.id %>")' style="width: 15px">
+            -
+          </button>
+        </div>
+        <div>
+          <div class="description<%= value.id%>" style="display: none">
+            <p><%= value.description %></p>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space between;
+              margin: 5px;
+              width: match-parent;
+            "
+          >
+            <button
+              onclick="deleteFromCart('<%= value.id %>' )"
+              style="
+                padding: 0.5rem 0.8rem;
+                margin-right: 5px;
+                background-color: blue;
+                color: white;
+                border: none;
+              "
+            >
+              Remove
+            </button>
+            <button
+              onclick='showDescription("<%= value.id %>")'
+              id="description<%= value.id %>"
+              style="
+                padding: 0.5rem 0.8rem;
+                background-color: blue;
+                color: white;
+                border: none;
+              "
+            >
+              Desc
+            </button>
+            <button
+              onclick='payment("<%= value.id %>","<%= value.username%>","<%= arr[index].quantity%>","<%= value.price%>")'
+              id="placeOrder<%= value.id %>"
+              style="
+                padding: 0.5rem 0.8rem;
+                background-color: blue;
+                margin: 0 0.3rem;
+                color: white;
+                border: none;
+              "
+            >
+              Order
+            </button>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <!-- <script src="https://js.stripe.com/v3/"></script> -->
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+    <script>
+      let val1, val2, val3, val4;
+      let stripePublicKey = "<%= stripe %>";
+      let innerContainer = document.getElementsByClassName("innerContainer")[0];
+      let showCart = document.getElementById("showCart");
+      showCart.remove();
+      let element1 = document.getElementsByClassName("element1")[0];
+      let mainDescription =
+        document.getElementsByClassName("mainDescription")[0];
+      let ratings = document.getElementsByClassName("ratings")[0];
+      let description = document.getElementsByClassName("description")[0];
+      let table = document.getElementById("table");
+      var stripeHandler ;
 
-            </div>
-           <% }) %>        
-            </div>
-
-            <script>
-
-                let showCart=document.getElementById("showCart");
-                showCart.remove();
-                let element1=document.getElementsByClassName("element1")[0]
-                let mainDescription=document.getElementsByClassName("mainDescription")[0]
-                let ratings=document.getElementsByClassName("ratings")[0]
-                let description=document.getElementsByClassName("description")[0]
-                let table=document.getElementById("table")
-                function placeOrder(val1,val2,val3){
-                    console.log(val1,val2,val3)
-                    let request=new XMLHttpRequest
-                    request.open('POST','/placeOrder');
-                    request.setRequestHeader('Content-Type','application/json');
-                    request.send(JSON.stringify({id:val1,sellerName:val2,quantity:val3}))
-                    request.addEventListener('load',function(){
-                        console.log(this.responseText);
-                        deleteFromCart(val1);
-                    })
-                }
-                function  makeCall(link,val,operation){
-                    let request=new XMLHttpRequest()
-                    request.open('POST',link);
-                    request.setRequestHeader('Content-Type','application/json');
-                    request.send(JSON.stringify({id:val}));
-                    request.addEventListener("load",function(){
-                        if(request.status==200){
-                            // console.log(JSON.parse(this.responseText));
-                            if(operation==1){
-                                let x=parseInt(document.getElementById("label"+val).innerHTML)
-                                x=x+1;
-                                document.getElementById("label"+val).innerHTML=x;
-                                console.log("Printing the value of x in operation 1 "+x);
-
-                            }
-                            if(operation==2){
-                                let x=parseInt(document.getElementById("label"+val).innerHTML)
-                                if(x>0){
-                                    x=x-1;
-                                }
-                                console.log('Printing the value of x in operation 1'+x);
-                                document.getElementById("label"+val).innerHTML=x;   
-                            }
-                            if(operation==3){
-                                let mainContainer=document.getElementById("mainContainer"+val);
-                                // console.log("mainContainer"+val,typeof "mainContainer"+val);
-                                // console.log(mainContainer);
-                                mainContainer.remove();
-                            }
-                            if(operation==4){
-                                let productsArray=JSON.parse(this.responseText);
-                                let ele=productsArray.description[0];
-                                mainDescription.innerHTML=ele.descMain;
-                                ratings.innerHTML=ele.Rating
-                                description.innerHTML=ele.Description
-                                let image=element1.children[0];
-                                image.setAttribute("src",`${productsArray.image}`)
-                                let tableElement=table.children;
-                                console.log(tableElement)
-                                tableElement[0].children[0].children[1].innerHTML=ele.warranty;
-                                tableElement[0].children[1].children[1].innerHTML=ele.color;
-                                tableElement[0].children[2].children[1].innerHTML=ele.RAM;
-                            }
-                           // window.location="http://localhost:3000/displayCart";
-                        }
-                    })
-                }
-                function incCount(val){
-                    console.log("hello")
-                    console.log(val)
-                    makeCall('/incCount',val,1);
-                }
-                function decCount(val){
-                    makeCall('/decCount',val,2);
-                   
-
-                }
-                function logout(){
-            window.location="http://localhost:5000/logout"
+      
+      function payment(val1, val2, val3, val4) {
+        console.log("printing the value of variables");
+        let qty = document.getElementById('label'+val1).innerText;
+            console.log("printing quantity "+qty);
+            val4  =  parseInt(val4)*parseInt(qty);
+            console.log("printing the val4"+val4);
+        stripeHandler = StripeCheckout.configure({
+          key: stripePublicKey,
+          locale: "en",
+          token: function (token) {
+            // console.log(token);
+            console.log("printing in the token", val1, val2, val3, val4);
+            let qty = document.getElementById('label'+val1).innerText;
+            console.log("printing quantity "+qty);
+            val4  =  parseInt(val4)*parseInt(qty);
+            console.log("printing val4 "+val4);
+            placeOrder(val1, val2, val3, val4);
+            console.log(token);
+          },
+        });
+        stripeHandler.open({ amount: val4 });
+      }
+      function placeOrder(val1, val2, val3, val4) {
+        console.log(val1, val2, val3, val4);
+        console.log("printing cost");
+        console.log(val4);
+        let request = new XMLHttpRequest();
+        request.open("POST", "/placeOrder");
+        request.setRequestHeader("Content-Type", "application/json");
+        request.send(
+          JSON.stringify({
+            id: val1,
+            sellerName: val2,
+            quantity: val3,
+            cost: val4,
+          })
+        );
+        request.addEventListener("load", async function () {
+          //placint the order now
+          //await payment(parseInt(val3) * parseInt(val4));
+          console.log("consoling the responseText");
+          console.log(this.responseText);
+          deleteFromCart(val1,"success");
+        });
+      }
+      function makeCall(link, val, operation,val2) {
+        let request = new XMLHttpRequest();
+        request.open("POST", link);
+        request.setRequestHeader("Content-Type", "application/json");
+        request.send(JSON.stringify({ id: val,orderStatus:val2}));
+        request.addEventListener("load", function () {
+          if (request.status == 200) {
+            // console.log(JSON.parse(this.responseText));
+            if (operation == 1) {
+              if (request.responseText == "success") {
+                let x = parseInt(
+                  document.getElementById("label" + val).innerHTML
+                );
+                x = x + 1;
+                document.getElementById("label" + val).innerHTML = x;
+                console.log("Printing the value of x in operation 1 " + x);
+              } else {
+                alert("Out of Stocks");
+              }
+            }
+            if (operation == 2) {
+              let x = parseInt(
+                document.getElementById("label" + val).innerHTML
+              );
+              if (x > 1) {
+                x = x - 1;
+              }
+              console.log("Printing the value of x in operation 1" + x);
+              document.getElementById("label" + val).innerHTML = x;
+            }
+            if (operation == 3) {
+              let mainContainer = document.getElementById(
+                "mainContainer" + val
+              );
+              // console.log("mainContainer"+val,typeof "mainContainer"+val);
+              // console.log(mainContainer);
+              mainContainer.remove();
+            }
+            if (operation == 4) {
+              console.log("Printing in the Operation 4");
+              console.log(this.responseText);
+              let productsArray = JSON.parse(this.responseText);
+              let ele = productsArray.description[0];
+              mainDescription.innerHTML = ele.descMain;
+              ratings.innerHTML = ele.Rating;
+              description.innerHTML = ele.description;
+              let image = element1.children[0];
+              image.setAttribute("src", `${productsArray.image}`);
+              let tableElement = table.children;
+              console.log(tableElement);
+              tableElement[0].children[0].children[1].innerHTML = ele.warranty;
+              tableElement[0].children[1].children[1].innerHTML = ele.color;
+              tableElement[0].children[2].children[1].innerHTML = ele.RAM;
+            }
+            // window.location="http://localhost:3000/displayCart";
+          }
+        });
+      }
+      function incCount(val) {
+        console.log("hello");
+        console.log(val);
+        makeCall("/incCount", val, 1);
+      }
+      function decCount(val) {
+        if(parseInt(document.getElementById('label'+val).innerText)>1){
+            makeCall("/decCount", val, 2);
         }
-                function deleteFromCart(val){
-                    console.log("hello deleteFromCart");
-                    console.log(val)
-                    makeCall('/deleteFromCart',val,3);
-                }
-                function userProfile(val){
-           window.location="http://localhost:5000/changePassword";
-        }
-                function showDescription(val){
-                      let center =document.getElementsByClassName("center")[0];
-                      center.style.display="block";
-                      center.setAttribute("onclick","hideTheScreen()");
-                      makeCall('/getDetails',val,4);
-                    // console.log(val)
-                    // console.log("hello description");
-                    // let description=document.getElementsByClassName("description"+val)[0];
-                    // description.style.display="block";
-                    // document.getElementById("description"+val).innerHTML="Read Less";
-                    // document.getElementById("description"+val).setAttribute("onclick",`readLess('${val}')`)
-                    
-                }
-                function hideTheScreen(){
-            let center=document.getElementsByClassName("center")[0];
-            center.style.display="none";
-        }
-        function showOrders(){
-            window.location='http://localhost:5000/showOrders'
-        }
-        function adminPanel(){
-               window.location='http://localhost:5000/adminPanel';
-        }
-                function readLess(val){
-                    let element=document.getElementsByClassName("description"+val)[0];
-                    element.style.display="none";
-                    let btn=document.getElementById("description"+val);
-                    btn.innerHTML="Desc";
-                    btn.setAttribute("onclick",`description('${val}')`)
-                }
-            </script>
-</body>
+      }
+      function logout() {
+        window.location = "http://localhost:5000/logout";
+      }
+      function deleteFromCart(val,val2) {
+        console.log("hello deleteFromCart");
+        console.log(val);
+        makeCall("/deleteFromCart",val,3,val2);
+      }
+      function userProfile(val) {
+        window.location = "http://localhost:5000/changePassword";
+      }
+      function showDescription(val) {
+        let center = document.getElementsByClassName("center")[0];
+        center.style.display = "block";
+        center.setAttribute("onclick", "hideTheScreen()");
+        makeCall("/getDetails", val, 4);
+        // console.log(val)
+        // console.log("hello description");
+        // let description=document.getElementsByClassName("description"+val)[0];
+        // description.style.display="block";
+        // document.getElementById("description"+val).innerHTML="Read Less";
+        // document.getElementById("description"+val).setAttribute("onclick",`readLess('${val}')`)
+      }
+      function hideTheScreen() {
+        let center = document.getElementsByClassName("center")[0];
+        // innerContainer.remove();
+        center.style.display = "none";
+      }
+      function showOrders() {
+        window.location = "http://localhost:5000/showOrders";
+      }
+      function adminPanel() {
+        window.location = "http://localhost:5000/adminPanel";
+      }
+      function readLess(val) {
+        let element = document.getElementsByClassName("description" + val)[0];
+        element.style.display = "none";
+        let btn = document.getElementById("description" + val);
+        btn.innerHTML = "Desc";
+        btn.setAttribute("onclick", `description('${val}')`);
+      }
+    </script>
+  </body>
 </html>

@@ -9,19 +9,19 @@
 </head>
 <body>
     <div class="contain">
-        <h3 style="font-family: Arial, Helvetica, sans-serif;font-weight: normal;">LOGIN</h3>
-        <form action="/login" method="post">
+        <h3 style="font-family: Arial, Helvetica, sans-serif;font-weight: 700; font-size:24px; color:#363D57">LOGIN</h3>
+        <form action="/login" method="post" style="margin-bottom: 0;">
             <input type="text" placeholder="UserName" name="username" style="display: block;" required>
             <input type="password" name="password" style="display: block;" placeholder="Password" required>
             <input type="submit" id="submit" value="LogIn">
-            <a href="/forgotPassword" style="text-align: center;">forgot password</a>
+            <a href="/forgotPassword" style="text-align: center;">Forgot password</a>
         </form>
-        <div class="container" style="height:10px;margin:0">
-        <% if(error!=''){%>
-            <p style="color:red;"><%= error %> </p>
-            <% } %>
-        </div>
-        <p>New to Grab? <a href="/signup">Create Account</a></p>
+        <div class="container" style="height:10px;margin-bottom:10px; text-align: center;">
+         <% if(error!=''){%>
+             <p style="color:red;"><%= error %> </p>
+             <% } %>
+         </div>
+            <p>New to Grab? <a href="/signup">Create Account</a></p>
     </div>
    
 

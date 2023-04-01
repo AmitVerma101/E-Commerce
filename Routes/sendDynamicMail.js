@@ -1,9 +1,18 @@
 const express=require('express');
 const router=express.Router()
-const findFunction=require('../Database/find')
+//const findFunction=require('../Database/find')
+require('dotenv').config()
+let database = process.env.database;
 const mongo=require('../Database/mongo');
 router.post('/',async (req,res)=>{
-    let obj= await mongo.findUser("email",req.body.email);
+  //  let obj= await mongo.findUser("email",req.body.email);
+  let obj;
+  if(database == 'sql'){
+      obj= await sql.findUser("email",req.body.email)
+  }
+  else {
+    obj = await mongo.findUser("email",req.body.email);
+  }
     // let obj= await findFunction("email",req.body.email);
 
         if(obj.length!=0){

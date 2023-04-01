@@ -6,17 +6,25 @@ const app=express();
 const upload = multer({ dest: 'products/' })
 app.use(bodyParser.urlencoded({ extended: true }));
 const router=express.Router()
-const findFunction=require('../Database/find')
+//const findFunction=require('../Database/find')
 const mongo=require('../Database/mongo')
+const sql=require('../Database/sql');
+require('dotenv').config();
+let database = process.env.database;
 router.post('/',upload.single('image'),async (req,res)=>{
     let image=req.file.filename;
-    let {id,name,descMain,Rating,description,warranty,color,RAM}=req.body;
-    let arr={descMain,Rating,description,warranty,color,RAM}
+    let {id,name,descMain,Rating,description,warranty,color,RAM,stocks}=req.body;
+    let arr={descMain,Rating,description,warranty,color,RAM,stocks}
     console.log('consoling here');
     console.log(id,name,image,arr);
     console.log(typeof name)
-await mongo.updateSellerProduct(id,name,image,arr)
+    if(database == 'sql'){
+        await sql.updateSellerProduct(id,name,image,arr);
+    }
+    else {
+        await mongo.updateSellerProduct(id,name,image,arr)
 
+    }
    res.render("sellerProducts",{username:req.session.username})
 })
 

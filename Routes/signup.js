@@ -4,6 +4,8 @@ const sendMail=require('../middlewares/sendMail')
 const mongo=require('../Database/mongo')
 const sql=require('../Database/sql');
 const express=require('express');
+require('dotenv').config();
+let database = process.env.database;
 const router=express.Router()
 //const find=require('../Database/find')
 console.log("Inside signup")
@@ -13,7 +15,15 @@ router.route('/')
         res.render("signup",{error:''});
     }
     else {
-        let value= await mongo.findUser("username",req.session.username);
+     //   let value= await mongo.findUser("username",req.session.username);
+     let value;
+        if(database == 'sql'){
+            value=await sql.findUser("username",req.session.username);
+        }
+        else {
+            value = await mongo.findUser("Username",req.session.username);
+        }
+      //  console.log(value2);
         // let value=await findFunction("username",req.session.username)
         value=value[0].isVerified
        if(req.session.isLoggedIn==true&&value){
@@ -38,7 +48,15 @@ router.route('/')
     }
     //checking if user already exists
     console.log("hello from the signup function")
-    let obj=await mongo.findUser("username",username);
+  //  let obj=await mongo.findUser("username",username);
+  let obj;
+  if(database == 'sql'){
+      obj=await sql.findUser("username",username);
+  }
+  else {
+    obj = await mongo.findUser("username",username);
+  }
+
     // let obj= await findFunction("username",username)
    
         console.log(obj);
@@ -47,8 +65,9 @@ router.route('/')
             return;
         }
         else {
-            let obj={name,username,email,password,isVerified:0,token:Date.now().toString(),products:[]}
+            let obj={name,username,email,password,isVerified:0,token:Date.now().toString(),products:[],role:'user'}
             await mongo.createUser(obj);
+            await sql.createUser(obj);
            
                 console.log(obj.token);
                 console.log("user saved");
