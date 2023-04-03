@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cart Details</title>
-    <link rel="stylesheet" href="products.css" />
+    <link rel="stylesheet" href="/products.css" />
   </head>
   <body>
     <div class="header"><%- include('partials/header',{user:username}); %></div>
@@ -35,18 +35,22 @@
         </div>
       </div>
     </div>
-    <div class="container">
+    <div class="container" style="margin-top: 1rem;">
       <% products.forEach(function(value,index){ %>
       <div
         id="mainContainer<%= value.id %>"
         style="
+          padding:0.2rem;
           width: 80%;
           display: flex;
+          gap: 0.5rem;
           align-items: center;
           flex-direction: column;
+          /* border: 1px solid black; */
+          box-shadow: 0 0 10px black;
         "
       >
-        <img src="<%= value.image %>" alt="" />
+        <img src="/<%= value.image %>" alt="" style="height:35vh;width:99%"/>
         <p style="text-align: center"><%= value.name %></p>
         <div>
           <label>quantity: </label>
@@ -95,7 +99,7 @@
               Desc
             </button>
             <button
-              onclick='payment("<%= value.id %>","<%= value.username%>","<%= arr[index].quantity%>","<%= value.price%>")'
+              onclick='payment("<%= value.id %>","<%= value.username%>","<%= arr[index].quantity%>","<%= value.description[0].price%>")'
               id="placeOrder<%= value.id %>"
               style="
                 padding: 0.5rem 0.8rem;
@@ -156,7 +160,7 @@
         console.log("printing cost");
         console.log(val4);
         let request = new XMLHttpRequest();
-        request.open("POST", "/placeOrder");
+        request.open("POST", "/cart/placeOrder");
         request.setRequestHeader("Content-Type", "application/json");
         request.send(
           JSON.stringify({
@@ -221,7 +225,7 @@
               ratings.innerHTML = ele.Rating;
               description.innerHTML = ele.description;
               let image = element1.children[0];
-              image.setAttribute("src", `${productsArray.image}`);
+              image.setAttribute("src", `/${productsArray.image}`);
               let tableElement = table.children;
               console.log(tableElement);
               tableElement[0].children[0].children[1].innerHTML = ele.warranty;
@@ -235,11 +239,11 @@
       function incCount(val) {
         console.log("hello");
         console.log(val);
-        makeCall("/incCount", val, 1);
+        makeCall("/cart/incCount", val, 1);
       }
       function decCount(val) {
         if(parseInt(document.getElementById('label'+val).innerText)>1){
-            makeCall("/decCount", val, 2);
+            makeCall("/cart/decCount", val, 2);
         }
       }
       function logout() {
@@ -248,7 +252,7 @@
       function deleteFromCart(val,val2) {
         console.log("hello deleteFromCart");
         console.log(val);
-        makeCall("/deleteFromCart",val,3,val2);
+        makeCall("/cart/deleteFromCart",val,3,val2);
       }
       function userProfile(val) {
         window.location = "http://localhost:5000/changePassword";
@@ -258,12 +262,6 @@
         center.style.display = "block";
         center.setAttribute("onclick", "hideTheScreen()");
         makeCall("/getDetails", val, 4);
-        // console.log(val)
-        // console.log("hello description");
-        // let description=document.getElementsByClassName("description"+val)[0];
-        // description.style.display="block";
-        // document.getElementById("description"+val).innerHTML="Read Less";
-        // document.getElementById("description"+val).setAttribute("onclick",`readLess('${val}')`)
       }
       function hideTheScreen() {
         let center = document.getElementsByClassName("center")[0];
@@ -274,7 +272,7 @@
         window.location = "http://localhost:5000/showOrders";
       }
       function adminPanel() {
-        window.location = "http://localhost:5000/adminPanel";
+        window.location = "http://localhost:5000/admin/adminPanel";
       }
       function readLess(val) {
         let element = document.getElementsByClassName("description" + val)[0];

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders</title>
-    <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="/products.css">
 </head>
 <body>
     <div class="header">
@@ -46,10 +46,10 @@
 
         </div>
     </div>
-    <div class="container">
+    <div class="container" style="margin-top:2rem;">
         <% products.forEach(function(value,index){ %>
-            <div id="mainContainer<%= value.id %>" style="width:80%;display: flex;align-items: center; flex-direction: column;">
-                <img src="<%= value.image %>" alt="">
+            <div id="mainContainer<%= value.id %>" style="width:80%;display: flex;align-items: center; flex-direction: column;box-shadow:0 0 10px black;">
+                <img src="/<%= value.image %>" alt="">
                 <p style="text-align: center;"><%= value.name %></p>
                 <div>
                     <label >quantity: </label>
@@ -62,8 +62,8 @@
                     </div>
                     <div style="display: flex; justify-content: space between; margin: 5px; width: match-parent;">
                         
-                     <button onclick='resolve("<%= arr[index].id %>","<%= arr[index].productId %>")'>Resolve</button>
-                     <button onclick='reject("<%= arr[index].id %>","<%= arr[index].productId %>")'>Reject</button>
+                     <button onclick='resolve("<%= arr[index].id %>","<%= arr[index].productId %>")' style="padding:0.4rem 0.8rem;margin-right:0.5rem;background-color: blue;color:white;">Resolve</button>
+                     <button onclick='reject("<%= arr[index].id %>","<%= arr[index].productId %>")' style="padding:0.4rem 0.8rem;background-color: blue;color:white;">Reject</button>
                      
                     </div>
                 </div>
@@ -86,22 +86,22 @@
                 }
                 function resolve(val1,val2){
                     let request=new XMLHttpRequest
-                    request.open('POST','/resolveRequest');
+                    request.open('POST','/seller/resolveRequest');
                     request.setRequestHeader('Content-Type','application/json');
                     request.send(JSON.stringify({id:val1,productId:val2}));
                     request.addEventListener('load',function(){
                         console.log(this.responseText);
-                        window.location='http://localhost:5000/sellerOrders'
+                        window.location='http://localhost:5000/seller/sellerOrders'
                     })
                 }
                 function reject(val1,val2){
                     let request=new XMLHttpRequest
-                    request.open('POST','/rejectRequest');
+                    request.open('POST','/seller/rejectRequest');
                     request.setRequestHeader('Content-Type','application/json');
                     request.send(JSON.stringify({id:val1,productId:val2}));
                     request.addEventListener('load',function(){
                         console.log(this.responseText);
-                        window.location='http://localhost:5000/sellerOrders';
+                        window.location='http://localhost:5000/seller/sellerOrders';
                     })
                 }
                 function placeOrder(val1,val2,val3){

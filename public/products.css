@@ -12,6 +12,23 @@
     grid-template-columns: repeat(3,1fr);
     margin: 0 auto;
 }
+
+#cross:hover {
+  color: red;
+  border:1px solid black;
+}
+
+#form input {
+  width: 80%;
+  font-size:20px;
+}
+#form textarea{
+  width:80%;
+}
+#form #submit {
+  width: fit-content;
+  padding:0.4rem 0.8rem;
+}
 .top {
     display: flex;
     height: 2rem;
@@ -27,14 +44,15 @@
     
 }
 body {
-  background-image: url("wallpaper.jpg");
+  /* background-image: url("wallpaper.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   width: 100vw;
   height: 100vh;
-   background-position: center center; 
+   background-position: center center;  */
 }
 .center {
+   
     padding:2rem;
     display: none;
     box-shadow: 0 0 10px black;

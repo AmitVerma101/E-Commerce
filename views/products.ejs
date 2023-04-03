@@ -79,7 +79,7 @@
             })
         }
         function adminPanel(){
-               window.location='http://localhost:5000/adminPanel';
+               window.location='http://localhost:5000/admin/adminPanel';
         }
         function loadMoreData(arr){
                  copyData(arr);
@@ -90,8 +90,12 @@
                     element.style.boxShadow="0 0 10px black"
                     // element.style.backgroundColor="white";
                     element.style.padding='0.2rem'
+                    element.style.display='flex'
+                    element.style.flexDirection='column'
+                    element.style.gap='1rem'
                     element.style.width="70%"
                     element.style.margin="0 auto"
+                    element.style.marginTop="1rem";
                   //  element.style.backgroundColor="#aaa";
                     let heading=document.createElement("h2");
                     heading.style.textAlign="center"
@@ -120,7 +124,8 @@
                     innerDiv.appendChild(btn)
                     innerDiv.appendChild(btn2)
                     innerDiv.style.display="flex"
-                    innerDiv.style.justifyContent="space-between"
+                    
+                    innerDiv.style.justifyContent="space-around"
                     
                     btn.setAttribute("onclick",`addDescription("${value.id}")`);
                     element.setAttribute("id",`${value.id}`)
@@ -196,7 +201,7 @@
         function addToCart(val){
                 console.log(val)
                 let request=new XMLHttpRequest();
-                request.open('POST','/addToCart')
+                request.open('POST','/cart/addToCart')
                 request.setRequestHeader("Content-Type","application/json");
                 request.send(JSON.stringify({id:val}));
                 request.addEventListener("load",function(){
@@ -216,7 +221,7 @@
         }
 
         function displayCart(){
-           window.location="http://localhost:5000/displayCart"
+           window.location="http://localhost:5000/cart/displayCart"
         }
      </script>
 </body>

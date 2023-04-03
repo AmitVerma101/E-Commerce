@@ -5,23 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Products</title>
-    <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="/products.css">
 </head>
 
 <body>
-    <div class="form">
-        <form action="/addSellerProduct" method="post" id="form" enctype="multipart/form-data">
-            <input type="text" name="id" id="readonly" readonly>
+    <div class="form" >
+        <button onclick="hideScreen()" id="cross" style="position:absolute;right:2rem;top:0.5rem;padding:0.4rem;border:none;background-color: white;font-weight: bold;font-size:20px;">x</button>
+        <form action="/seller/addSellerProduct" method="post" id="form" enctype="multipart/form-data">
+            <input type="text" name="id" id="readonly" readonly style="display: none;">
             <input type="text" name="name" placeholder="product name" id="name" required>
             <input type="text" name="descMain" placeholder="descMain" id="descMain" required>
             <input type="number" name="Rating" placeholder="rating" id="rating" required>
-            <input type="description" name="description" id="description" placeholder="description" required>
+            <textarea name="description" id="description" cols="30" rows="10" required placeholder="description"></textarea>
+            <!-- <input type="description" name="description" id="description" placeholder="description" required> -->
             <input type="number" name="warranty" id="warranty" placeholder="warranty" required>
             <input type="text" name="color" id="color" placeholder="color" required>
             <input type="number" name="RAM" id="ram" placeholder="RAM" required>
             <input type="number" name="stocks" id="stocks" placeholder="stocks" value="1" required>
+            <input type="text" name="price" id="price" placeholder="price" required>
             <input type="file" name="image" id="image" required>
-            <input type="submit" value="Add Product" onclick="hideScreen()">
+            <input type="submit" value="Add Product" id="submit" onclick="hideScreen()">
         </form>
     </div>
     <div class="center">
@@ -86,7 +89,7 @@
         let container=document.getElementsByClassName("container")[0];
         function fetchMoreProducts(){
             let request=new XMLHttpRequest();
-            request.open('get','/fetchSellerProducts')
+            request.open('get','/seller/fetchSellerProducts')
             request.send();
 
             request.addEventListener('load',function(){
@@ -143,7 +146,7 @@
                     
                     btn.setAttribute("onclick",`addDescription("${value.id}")`);
                     element.setAttribute("id",`${value.id}`)
-                    image.setAttribute("src",value.image);
+                    image.setAttribute("src",`/${value.image}`);
                     image.style.display="block";
                     heading.innerHTML=value.name
                     element.appendChild(image)
@@ -171,7 +174,7 @@
             ratings.innerHTML=ele.Rating
             description.innerHTML=ele.description
             let image=element1.children[0];
-            image.setAttribute("src",`${productsArray[index].image}`)
+            image.setAttribute("src",`/${productsArray[index].image}`)
             let tableElement=table.children;
             console.log(tableElement)
             tableElement[0].children[0].children[1].innerHTML=ele.warranty;
@@ -228,7 +231,7 @@
             let description=document.getElementById('description')
             let rating=document.getElementById('rating');
             let form=document.getElementById('form');
-            form.setAttribute('action','/updateProduct')
+            form.setAttribute('action','/seller/updateProduct')
             let readonly=document.getElementById('readonly');
             readonly.setAttribute('value',val);
             // name.setAttribute('sendingId',val);
@@ -244,14 +247,14 @@
                
         }
         function logout(){
-            window.location="http://localhost:5000/logout"
+            window.location="http://localhost:5000/seller/logout"
         }
 
         function displayCart(){
            let form=document.getElementsByClassName('form')[0];
            form.style.display='block';
            let element=document.getElementById('form');
-           element.setAttribute('action','/addSellerProduct')
+           element.setAttribute('action','/seller/addSellerProduct')
         //    form.setAttribute("onclick","hideScreen()");
         }
         function hideScreen(){
@@ -263,17 +266,17 @@
         function deleteProduct(val){
             console.log(val);
             let request=new XMLHttpRequest;
-            request.open('POST','/deleteProduct');
+            request.open('POST','/seller/deleteProduct');
             request.setRequestHeader('Content-Type','application/json')
             request.send(JSON.stringify({id:val}));
             request.addEventListener('load',function(){
                 console.log(this.responseText)
                 // fetchMoreProducts();
-                window.location='http://localhost:5000/sellerLogin'
+                window.location='http://localhost:5000/seller/sellerLogin'
             })
         }
         function showOrders(){
-            window.location='http://localhost:5000/sellerOrders';
+            window.location='http://localhost:5000/seller/sellerOrders';
         }
      </script>
 </body>

@@ -5,8 +5,8 @@ const confirmMail= async (req,res,val)=>{
         host: 'smtp.ethereal.email',
         port: 587,
         auth: {
-            user: 'gunnar23@ethereal.email',
-            pass: 'NBCqWbqbG4ZpdGqXF2'
+            user: 'jessica.welch72@ethereal.email',
+            pass: '14hmk4rZMWE3KKxtcp'
         }
     });
     let info = await transporter.sendMail({

@@ -37,7 +37,7 @@ async function createUser(val){
 async function findUser(val1,val2){
     await test(); 
     try {  
-        let request =await  pool.request().query(`select * from users where ${val1}='${val2}'`);
+        let request =await  pool.request().query(`select * from users where ${val1} = '${val2}' and (role='Admin' or role = 'user')`);
         return request.recordset;
     }
     catch(err){
@@ -97,7 +97,7 @@ async function findProduct(val1,val2,val3,val4){
             console.log(obj);
             let data=[]
             for(let i=0;i<obj.length;i++){
-              data.push({id:obj[i].p_id,name:obj[i].name,image:obj[i].image,username:obj[i].u_id,description:[{descMain:obj[i].descMain,Rating:obj[i].Rating,description:obj[i].description,warranty:obj[i].warranty,color:obj[i].color,RAM:obj[i].RAM}]})
+              data.push({id:obj[i].p_id,name:obj[i].name,image:obj[i].image,username:obj[i].u_id,description:[{descMain:obj[i].descMain,Rating:obj[i].Rating,description:obj[i].description,warranty:obj[i].warranty,color:obj[i].color,RAM:obj[i].RAM,price:obj[i].price}]})
     
             }
             console.log(data);
@@ -119,47 +119,52 @@ async function updateProduct(val1,val2,val3){
     console.log("In sql updateProduct function")
     console.log(val3);
     await test();
+    let stocks = await pool.request().query(`select stocks from products where p_id = ${val3}`)
+    stocks=stocks.recordset[0].stocks;
+    let u_id =  await pool.request().query(`select u_id from users where ${val1} = '${val2}'`)
+    console.log(u_id)
+    u_id = u_id.recordset[0].u_id;
     try {
-        let u_id =  await pool.request().query(`select u_id from users where ${val1} = '${val2}'`)
-        console.log(u_id)
-        u_id = u_id.recordset[0].u_id;
         console.log(u_id);
            
-               let stocks = await pool.request().query(`select stocks from products where p_id = ${val3}`)
-               stocks=stocks.recordset[0].stocks;
                if(stocks>0){
                    await pool.request().query(`insert into cart values(${u_id})`);
-                   await pool.request().query(`update products set stocks = ${stocks-1} where p_id = ${val3}`);
                    let cId=await pool.request().query(`select c_id from cart where u_id = ${u_id}`); 
                    cId= cId.recordset[0].c_id;
                    console.log(cId);    
-                    await pool.request().query(`insert into cart_details values(${cId},${val3},${1})`)
-                    return true;
-               }
-               else {
+                   await pool.request().query(`insert into cart_details values(${cId},${val3},${1})`)
+                   await pool.request().query(`update products set stocks = ${stocks-1} where p_id = ${val3}`);
+                   return true;
+                }
+                else {
                     console.log("Stocks not available");
+                    return false;
+                }
+            }
+            catch(err){
+                let cId=await pool.request().query(`select c_id from cart where u_id = ${u_id}`); 
+                cId= cId.recordset[0].c_id;
+                console.log(cId);
+                try {
+                    if(stocks > 0){
+                        
+                        await pool.request().query(`insert into cart_details values(${cId},${val3},${1})`)
+                        await pool.request().query(`update products set stocks = ${stocks-1} where p_id = ${val3}`);
+                        return true;
+
+                    }
+                    else {
+                        return false;
+                    }
+
+               }
+               catch(err){
+                    console.log("Item present in cart already");
                     return false;
                }
            }
-        //    catch(err){
-        //        let cId=await pool.request().query(`select c_id from cart where u_id = ${u_id}`); 
-        //        cId= cId.recordset[0].c_id;
-        //        console.log(cId);
-        //        try {
-        //            await pool.request().query(`insert into cart_details values(${cId},${val3},${1})`)
-        //            return true;
-
-        //        }
-        //        catch(err){
-        //             console.log("Item present in cart already");
-        //        }
-        //    }
     
-    catch (err){
-
-        console.log("Error while updating the value of the product"+err);
-        return false;
-    }
+    
     finally {
         pool.close();
     }
@@ -232,12 +237,18 @@ async function createOrder(val){
     const transaction = new sql.Transaction(pool);
     console.log("printing the value of total")
     console.log(val.total,typeof val.total);
+    let price = await pool.request().query(`select price from products where p_id = ${val.productId}`)
+    price = price.recordset[0].price;
+    let quantity;
     try {
         transaction.begin();
         let u_id =  await pool.request().query(`select u_id from users where username = '${val.username}'`)
         console.log(u_id)
         u_id = u_id.recordset[0].u_id;
+        quantity = await pool.request().query(`select quantity from cart_details where c_id = (select c_id from cart where u_id = ${u_id} and cart.c_id = cart_details.c_id)`)
         console.log(u_id);
+        quantity = quantity.recordset[0].quantity;
+        let total = price*quantity;
            try {
               // await pool.request().query(`insert into cart values(${u_id})`);
                await pool.request().query(`insert into orders values(${u_id})`)
@@ -248,7 +259,7 @@ async function createOrder(val){
                console.log(oId);
                
                // await pool.request().query(`insert into cart_details values(${cId},${1},${1})`)
-                await pool.request().query(`insert into order_details values(${oId},${val.productId},${val.status},${val.quantity},${val.total})`)
+                await pool.request().query(`insert into order_details values(${oId},${val.productId},${val.status},${quantity},${total})`)
                 transaction.commit();
             
            
@@ -310,7 +321,7 @@ async function createProduct(val1,val2){
         let u_id =await  pool.request().query(`select u_id from users where username = '${val1.username}'`);
         u_id=u_id.recordset[0].u_id
         console.log(u_id)
-        await pool.request().query(`insert into products (name,descMain,Rating,description,image,warranty,color,RAM,u_id,stocks) values('${val1.name}','${val2.descMain}',${val2.Rating},'${val2.description}','${val1.image}',${val2.warranty},'${val2.color}',${val2.RAM},${u_id},${val2.stocks})`)
+        await pool.request().query(`insert into products (name,descMain,Rating,description,image,warranty,color,RAM,u_id,stocks,price) values('${val1.name}','${val2.descMain}',${val2.Rating},'${val2.description}','${val1.image}',${val2.warranty},'${val2.color}',${val2.RAM},${u_id},${val2.stocks},${val2.price})`)
         // request = await pool.request().query(`select * from users`);
        
         pool.close();
@@ -327,22 +338,33 @@ async function createProduct(val1,val2){
 }
 async function deleteFromCart(val1,val2,val3,val4,val5){
     await test();
+    console.log(val1,val2,val3,val4,val5)
     const transaction = new sql.Transaction(pool);
     try {
         transaction.begin();
         let query;
-        if(val5==undefined){
-         query=`update products set stocks = ((select stocks from products where p_id = ${val4})+1) where p_id = ${val4}`
-        }
-       
-        await pool.request().query(query)
-        console.log(query);
+        console.log("before u_id")
         let u_id = await pool.request().query(`select u_id from users where ${val1} = '${val2}'`)
+        console.log("before c_id");
         u_id = u_id.recordset[0].u_id;
+        console.log(u_id)
         let c_id = await pool.request().query(`select c_id from cart where u_id = ${u_id}`)
         c_id = c_id.recordset[0].c_id;
+        console.log(c_id)
+        if(val5==undefined){
+          
+         let quantity =  await pool.request().query(`select quantity from cart_details where p_id = ${val4} and c_id = ${c_id}`);
+            quantity=quantity.recordset[0].quantity;
+            console.log("quantity",quantity);
+           query=`update products set stocks = ((select stocks from products where p_id = ${val4})+${quantity}) where p_id = ${val4}`
+         await pool.request().query(query)
+         console.log(query);
+        }
+        await pool.request().query(`delete cart_details where c_id = ${c_id} and p_id = ${val4}`);
+       // await pool.request().query(`delete cart where c_id = c_id`);
+       
 
-      await pool.request().query(`delete cart_details where p_id = ${val4} and c_id = ${c_id}`);
+    //   await pool.request().query(`delete cart_details where p_id = ${val4} and c_id = ${c_id}`);
         transaction.commit();
 
 
@@ -405,7 +427,7 @@ async function findProductFromCart(val){
          let newArr2=[];
          for(let i=0;i<newArrFinal.length;i++){
             let x=newArrFinal[i];
-            newArr2.push({id:x.p_id,name:x.name,image:x.image,username:x.u_id,description:[{descMain:x.descMain,Rating:x.Rating,description:x.description,warranty:x.warranty,color:x.color,RAM:x.RAM}],price:x.price});
+            newArr2.push({id:x.p_id,name:x.name,image:x.image,username:x.u_id,description:[{descMain:x.descMain,Rating:x.Rating,description:x.description,warranty:x.warranty,color:x.color,RAM:x.RAM,price:x.price}]});
          }
 
         console.log("printing the value of p_id in the findProductFromCart function sql");
@@ -453,7 +475,7 @@ async function findSeller(val1,val2,val3,val4){
         //console.log(pool)
         // let result=await pool.request().query('select * from students')
         // console.log(result);
-        let request =await  pool.request().query(`select * from users where ${val1}='${val2}' and ${val3} = '${val4}'`);
+        let request =await  pool.request().query(`select * from users where ${val1}='${val2}' and role = 'seller' and ${val3} = '${val4}'`);
         
         pool.close();
         return request.recordset;

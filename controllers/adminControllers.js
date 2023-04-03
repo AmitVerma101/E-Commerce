@@ -1,12 +1,30 @@
-const express=require('express');
+const express = require('express')
+const app= express();
 const sellerMail=require('../middlewares/sellerMail')
-let crypto=require('crypto')
+//const express=require('express');
+const User=require('../userSchema');
 const router=express.Router()
 const mongo=require('../Database/mongo')
 const sql=require('../Database/sql');
 require('dotenv').config();
-let database = process.env.database;
-router.post('/',async (req,res)=>{
+const crypto = require('crypto')
+let database = process.env.database
+
+
+//adding the adminPanel controller 
+
+const adminPanel = async (req,res)=>{
+    if(req.session.username!='Admin'){
+        res.end("You do not have permission to access the page")
+    }
+    else {
+        res.render("adminPanel",{error:''});
+    }
+}
+
+//adding the AddSeller Controller 
+
+const AddSeller = async (req,res)=>{
     if(req.session.username!='Admin'){
         res.end("You do not have the authorization to access the page");
     }
@@ -28,6 +46,6 @@ router.post('/',async (req,res)=>{
          
         
     }
-})
+}
 
-module.exports=router
+module.exports = {adminPanel,AddSeller};
